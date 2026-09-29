@@ -31,7 +31,7 @@
   </tr>
 </table>
 
-<sub>Each clip: <b>LeWM</b> (left) · <b>AnisoWM, ours</b> (middle) · <b>goal</b> (right). Same initial state, goal, CEM planner and random seed.</sub>
+<sub>Same initial state, goal, CEM planner and random seed for both models. The frame border turns <b>green</b> on success and <b>red</b> on failure.</sub>
 
 </div>
 
@@ -47,11 +47,15 @@
 
 LeWM picks actions by minimizing the terminal latent cost with CEM,
 
-$$J_z(U) = \lVert \hat z_H(U) - z_g \rVert^2 .$$
+```math
+J_z(U) = \lVert \hat z_H(U) - z_g \rVert^2 .
+```
 
 If the encoder $A$ makes the features isotropic, $A\Sigma A^\top = sI$, this cost becomes
 
-$$\lVert A(x - x_g)\rVert^2 = s\,(x - x_g)^\top \Sigma^{-1} (x - x_g),$$
+```math
+\lVert A(x - x_g)\rVert^2 = s\,(x - x_g)^\top \Sigma^{-1} (x - x_g),
+```
 
 so low-variance directions get the largest weight. We prove that joint prediction–SIGReg training selects exactly this metric as process noise vanishes, even as prediction loss goes to zero. A finite-horizon construction then shows **positive planning regret with exact prediction**.
 
@@ -64,8 +68,9 @@ so low-variance directions get the largest weight. We prove that joint predictio
 
 We replace the fixed isotropic target with a learnable diagonal covariance $\Lambda$ under a fixed trace and a condition-number bound $\kappa$:
 
-$$\mathcal T_{D,\kappa} = \{\, \Lambda \succ 0 : \operatorname{tr}\Lambda = D,\ \operatorname{cond}(\Lambda) \le \kappa \,\}, \qquad
-\mathcal L = \mathcal L_{\text{pred}} + \lambda\, \mathcal R_N\!\left(\Lambda^{-1/2} Z_\theta\right).$$
+```math
+\mathcal T_{D,\kappa} = \lbrace \Lambda \succ 0 : \mathrm{tr}\,\Lambda = D,\ \mathrm{cond}(\Lambda) \le \kappa \rbrace, \qquad \mathcal L = \mathcal L_{\text{pred}} + \lambda\, \mathcal R_N\left(\Lambda^{-1/2} Z_\theta\right).
+```
 
 - $\kappa = 1$ recovers the original SIGReg / LeWM.
 - $\Lambda$ gets gradients only through ΛReg, so **predictive training decides how variance is allocated**.
