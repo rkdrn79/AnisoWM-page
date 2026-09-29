@@ -18,16 +18,16 @@
     <td align="center"><b>OGBench-Cube</b></td>
   </tr>
   <tr>
-    <td><img src="static/gifs/pusht.gif" width="100%" alt="Push-T rollout"></td>
-    <td><img src="static/gifs/cube.gif" width="100%" alt="OGBench-Cube rollout"></td>
+    <td><img src="static/gifs/pusht_rollout.gif" width="100%" alt="Push-T rollout"></td>
+    <td><img src="static/gifs/cube_rollout.gif" width="100%" alt="OGBench-Cube rollout"></td>
   </tr>
   <tr>
     <td align="center"><b>Reacher</b></td>
     <td align="center"><b>Two-Room</b></td>
   </tr>
   <tr>
-    <td><img src="static/gifs/reacher.gif" width="100%" alt="Reacher rollout"></td>
-    <td><img src="static/gifs/tworoom.gif" width="100%" alt="Two-Room rollout"></td>
+    <td><img src="static/gifs/reacher_rollout.gif" width="100%" alt="Reacher rollout"></td>
+    <td><img src="static/gifs/tworoom_rollout.gif" width="100%" alt="Two-Room rollout"></td>
   </tr>
 </table>
 
