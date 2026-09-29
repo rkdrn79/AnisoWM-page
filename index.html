@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AnisoWM</title>
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <style>
+    body { font-family: 'Noto Sans', sans-serif; }
+    .publication-title { font-family: 'Google Sans', sans-serif; }
+    .title.is-3, .title.is-4 { font-family: 'Google Sans', sans-serif; }
+    .section.gray { background-color: #f5f5f5; }
+    .content p, .content li { line-height: 1.7; }
+    .eq { font-family: 'Cambria Math', 'STIX Two Math', 'Times New Roman', serif; font-size: 1.15rem;
+          text-align: center; margin: 0.8rem 0 1.2rem; overflow-x: auto; white-space: nowrap; }
+    .m { font-family: 'Cambria Math', 'STIX Two Math', 'Times New Roman', serif; font-style: italic; white-space: nowrap; }
+    table.table td, table.table th { text-align: center; vertical-align: middle; }
+    table.table td:first-child, table.table th:first-child { text-align: left; }
+    table.ranking { table-layout: fixed; }
+    table.ranking th, table.ranking td { text-align: center !important; }
+    table.ranking th:first-child, table.ranking td:first-child { text-align: left !important; }
+    table.ranking tr.group th { border-bottom: 0; padding-bottom: 0.2em; }
+    table.ranking tr.group th[colspan] { background-image: linear-gradient(#363636, #363636);
+      background-size: calc(100% - 1.2em) 1px; background-position: center bottom; background-repeat: no-repeat; }
+    .rollout { margin-bottom: 2rem; }
+    .rollout video { display: block; width: 100%; height: auto; cursor: pointer; }
+    .rollout-labels { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center;
+                      font-family: 'Google Sans', sans-serif; font-weight: 600; margin-bottom: 0.3rem; }
+    .case-label { font-family: 'Google Sans', sans-serif; font-weight: 600; font-size: 1.05rem; margin-bottom: 0.4rem; }
+    .tabs a { font-family: 'Google Sans', sans-serif; }
+    .publication-authors { font-family: 'Google Sans', sans-serif; margin-bottom: 0.3rem; }
+    .author-block { display: inline-block; margin: 0 0.2rem; }
+    .publication-links { margin-top: 1.2rem; }
+  </style>
+</head>
+<body>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-2 publication-title" style="margin-bottom: 20px;">
+              Anisotropic Representations Improve Planning in JEPA World Models
+            </h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">Mingu Kang<sup>1</sup>,</span>
+              <span class="author-block">Yoori Oh<sup>1&dagger;</sup>,</span>
+              <span class="author-block">Sookyung Kim<sup>2&dagger;</sup>,</span>
+              <span class="author-block">Joonseok Lee<sup>1&dagger;</sup></span>
+            </div>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>Seoul National University,</span>
+              <span class="author-block"><sup>2</sup>Ewha Womans University</span>
+            </div>
+            <div class="is-size-6 publication-authors" style="color: #696969;">
+              <span class="author-block"><sup>&dagger;</sup>Corresponding authors</span>
+            </div>
+            <div class="publication-links">
+              <a href="static/AnisoWM_preprint.pdf" target="_blank" class="button is-dark is-rounded">Paper</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section gray">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column">
+          <h2 class="title is-3">Summary</h2>
+          <div class="content has-text-justified">
+            <p>
+              Latent world models learn action-conditioned dynamics in representation space and often rank candidate
+              actions by the Euclidean distance between a predicted representation and a goal representation. Joint
+              training regularizes the representation to prevent collapse, but the same regularization also fixes how
+              terminal errors are weighted during planning. We show that <b>accurate prediction and noncollapsed
+              representations do not guarantee a task-aligned planning cost</b>: isotropic Gaussian regularization can
+              induce a geometry that ranks feasible outcomes differently from the task cost.
+              We therefore introduce AnisoWM with &Lambda;Reg, which replaces the fixed isotropic Gaussian target with a
+              <b>learnable diagonal covariance</b> under fixed-trace and condition-number constraints. The prediction
+              objective, predictor architecture and Euclidean planner are unchanged, and the target is used only during
+              training. Across four visual control environments, AnisoWM <b>improves planning success in all four</b>,
+              and its latent costs agree better with recorded task outcomes.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Motivation</h2>
+      <div class="content has-text-justified">
+        <p>
+          LeWM plans by minimizing the terminal latent cost with CEM,
+        </p>
+        <div class="eq">J<sub>z</sub>(U) = &#8214;&thinsp;&#7825;<sub>H</sub>(U) &minus; z<sub>g</sub>&thinsp;&#8214;<sup>2</sup>.</div>
+        <p>
+          Rescaling latent directions changes their relative error weights, so the geometry of the representation
+          determines which reachable outcome the planner prefers. For an invertible encoder <span class="m">A</span>
+          with isotropic feature covariance, <span class="m">A&Sigma;A<sup>&#8868;</sup> = sI</span>, the latent cost is
+        </p>
+        <div class="eq">&#8214;&thinsp;A(x &minus; x<sub>g</sub>)&thinsp;&#8214;<sup>2</sup> = s&thinsp;(x &minus; x<sub>g</sub>)<sup>&#8868;</sup>&thinsp;&Sigma;<sup>&minus;1</sup>&thinsp;(x &minus; x<sub>g</sub>).</div>
+        <p>
+          An isotropic representation therefore whitens the state and weights errors along low-variance directions
+          more heavily than the Euclidean task cost does. We prove that the joint prediction&ndash;SIGReg objective
+          selects this metric as the process noise vanishes, while the prediction loss goes to zero.
+        </p>
+      </div>
+      <div class="columns is-centered has-text-centered">
+        <div class="column">
+          <img src="static/figures/fig_toy_experiments.png" alt="Prediction-planning separation" style="width: 100%; height: auto;">
+          <p class="content has-text-centered is-size-7 mt-2">
+            Figure 1. Prediction&ndash;planning separation with a nonlinear encoder. (a) The Euclidean task cost and the
+            SIGReg latent cost select different outcomes from the same reachable set, and the learned latent geometry
+            closely follows the &Sigma;<sup>&minus;1</sup> reference. (b) As the process noise decreases by 30&times;, held-out
+            prediction error decreases substantially, while normalized planning regret stays near 0.16 over ten seeds.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section gray">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Method</h2>
+      <div class="content has-text-justified">
+        <p>
+          <b>AnisoWM relaxes the equal-variance constraint during representation learning.</b>
+          Let <span class="m">f<sub>&theta;</sub>(o) &isin; &#8477;<sup>D</sup></span> be the encoder output and
+          <span class="m">&Lambda; = diag(v<sub>1</sub>, &hellip;, v<sub>D</sub>)</span> the covariance of a zero-mean
+          Gaussian target, constrained to
+        </p>
+        <div class="eq">T<sub>D,&kappa;</sub> = { &Lambda; &#8827; 0 : tr&thinsp;&Lambda; = D,&ensp; cond(&Lambda;) &le; &kappa; }.</div>
+        <p>
+          The fixed trace keeps the total variance constant, and <span class="m">&kappa;</span> bounds the allowed
+          anisotropy; <span class="m">&kappa; = 1</span> recovers the isotropic target of LeWM. &Lambda;Reg standardizes
+          the features before the original SIGReg statistic and is trained jointly with the encoder and predictor:
+        </p>
+        <div class="eq">L = L<sub>pred</sub>(&theta;, &phi;) + &lambda;&thinsp;R<sub>N</sub>(&Lambda;<sup>&minus;1/2</sup>Z<sub>&theta;</sub>),&emsp;
+          v<sub>i</sub> = D&thinsp;e<sup>&alpha;<sub>i</sub></sup> / &sum;<sub>j</sub> e<sup>&alpha;<sub>j</sub></sup>,&emsp;
+          &alpha;<sub>i</sub> &isin; [&minus;&frac12;&thinsp;log&thinsp;&kappa;, &frac12;&thinsp;log&thinsp;&kappa;].</div>
+        <p>
+          &Lambda; receives gradients only through &Lambda;Reg, so the allocation of variance is decided by predictive
+          training rather than by task supervision. In the linear Gaussian model, a suitable allocation compensates for
+          the inverse-covariance weighting of the isotropic target and removes the finite-horizon planning regret.
+          Prediction and planning use the original latent <span class="m">z</span>, and &Lambda; is discarded after
+          training.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Experimental Results</h2>
+
+      <div class="columns is-centered has-text-centered mt-4">
+        <div class="column">
+          <img src="static/figures/fig_environments.png" alt="Environments" style="width: 85%; height: auto;">
+          <p class="content has-text-centered is-size-7 mt-2">
+            Figure 2. Environments. We use the datasets, model architecture and visual goal-planning protocol of LeWM.
+          </p>
+        </div>
+      </div>
+
+      <div class="content mt-5">
+        <h4 class="title is-4">1. Planning Success</h4>
+        <p class="has-text-justified">
+          With a single shared bound <span class="m">&kappa; = 2</span>, AnisoWM plans more successfully than LeWM in
+          all four environments: 93% vs. 87% on Two-Room, 89% vs. 86% on Reacher, 97% vs. 96% on Push-T and 79% vs.
+          74% on OGBench-Cube. Both models are trained in the same pipeline with identical settings and three training
+          seeds, so the regularization target is the only difference.
+        </p>
+      </div>
+      <div class="columns is-centered has-text-centered">
+        <div class="column">
+          <img src="static/figures/fig_main_result_full.png" alt="Planning success" style="width: 100%; height: auto;">
+          <p class="content has-text-centered is-size-7 mt-2">
+            Figure 3. Planning success rate (%). AnisoWM and LeWM are means over three training seeds; the other
+            baselines are taken from the LeWM paper.
+          </p>
+        </div>
+      </div>
+
+      <div class="content mt-5">
+        <h4 class="title is-4">2. Latent Cost Ordering</h4>
+        <p class="has-text-justified">
+          For each initial&ndash;goal pair, both models score the same recorded action sequences. We report the fraction
+          of sequence pairs whose cost ordering agrees with the ordering of the outcomes they actually reached.
+          <i>J</i><sub>enc</sub> encodes the reached observation, and <i>J</i><sub>pred</sub> is the planning cost,
+          which also includes the predictor rollout.
+        </p>
+        <div class="table-container">
+          <table class="table is-striped is-fullwidth ranking">
+            <colgroup><col style="width: 24%"><col style="width: 19%"><col style="width: 19%"><col style="width: 19%"><col style="width: 19%"></colgroup>
+            <thead>
+              <tr class="group"><th></th><th colspan="2"><i>J</i><sub>enc</sub> (representation only)</th><th colspan="2"><i>J</i><sub>pred</sub> (planning cost)</th></tr>
+              <tr><th>Environment</th><th>LeWM</th><th>AnisoWM (Ours)</th><th>LeWM</th><th>AnisoWM (Ours)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Two-Room</td><td>0.564</td><td><strong>0.661</strong></td><td>0.575</td><td><strong>0.646</strong></td></tr>
+              <tr><td>Reacher</td><td>0.790</td><td><strong>0.893</strong></td><td>0.676</td><td><strong>0.723</strong></td></tr>
+              <tr><td>Push-T</td><td><strong>0.647</strong></td><td>0.641</td><td>0.594</td><td><strong>0.621</strong></td></tr>
+              <tr><td>OGBench-Cube</td><td>0.555</td><td><strong>0.576</strong></td><td>0.537</td><td><strong>0.553</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="content mt-5">
+        <h4 class="title is-4">3. What the Planner Treats as Near the Goal</h4>
+        <p class="has-text-justified">
+          The planner ranks actions by distance in latent space, so the shape of that distance over the state space is
+          what decides the ranking. We encode a grid of physical states and take the cost to a goal as
+          <span class="m">&#8214;f(o<sub>x</sub>) &minus; f(o<sub>g</sub>)&#8214;&sup2;</span>, then look at the
+          positions each model ranks in the lowest tenth of that cost. A cost that behaved like a distance would give
+          the dashed disc; the baseline's set instead reaches positions the goal has nothing to do with.
+        </p>
+      </div>
+      <div class="columns is-centered has-text-centered">
+        <div class="column">
+          <img src="static/figures/fig_cost_main.png" alt="Sub-level sets of the latent planning cost" style="width: 100%; height: auto;">
+          <p class="content has-text-centered is-size-7 mt-2">
+            Figure 4. For each task, the rendered arena with the measurement window boxed, and that window.
+            <span class="m">&rho;</span> is the rank agreement between the latent cost and physical distance over the
+            window. <i>The two goals are chosen</i>, as the clearest of several hundred positions scored for this
+            purpose; this is a geometric statistic the planner never computes directly, so it does not by itself
+            establish that the ordering is why the success rates move.
+          </p>
+        </div>
+      </div>
+
+      <div class="content mt-5">
+        <h4 class="title is-4">4. Learned Target Spectra</h4>
+        <p class="has-text-justified">
+          Under the same trace and <span class="m">&kappa; = 2</span> bound, training selects a different variance
+          allocation in each environment, and the allocation keeps changing after the condition-number bound is
+          reached. The bound limits how anisotropic the target can be, but does not determine the spectrum itself.
+        </p>
+      </div>
+      <div class="columns is-centered has-text-centered">
+        <div class="column">
+          <img src="static/figures/fig_target_spectra.png" alt="Learned target spectra" style="width: 100%; height: auto;">
+          <p class="content has-text-centered is-size-7 mt-2">
+            Figure 5. Left: learned target at <span class="m">&kappa; = 2</span> in each environment, sorted by variance.
+            Right: target spectrum over training for one Two-Room run.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section gray">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Rollouts</h2>
+      <div class="content has-text-justified">
+        <p>
+          LeWM and AnisoWM start from the same initial state and use the same goal, CEM planner and random seed.
+        </p>
+      </div>
+<!-- ROLLOUTS:BEGIN -->
+      <div class="tabs is-centered is-boxed" id="env-tabs">
+        <ul>
+          <li class="is-active" data-env="pusht"><a>Push-T</a></li>
+          <li data-env="cube"><a>OGBench-Cube</a></li>
+          <li data-env="reacher"><a>Reacher</a></li>
+          <li data-env="tworoom"><a>Two-Room</a></li>
+        </ul>
+      </div>
+      <div class="rollout-pane" data-env="pusht">
+        <div class="rollout">
+          <p class="case-label">Case 1</p>
+          <div class="rollout-labels"><span>LeWM</span><span>AnisoWM (Ours)</span><span>Goal</span></div>
+          <video src="static/videos/pusht_case1.mp4" poster="static/videos/pusht_case1.jpg" autoplay muted loop playsinline preload="auto"></video>
+        </div>
+        <div class="rollout">
+          <p class="case-label">Case 2</p>
+          <div class="rollout-labels"><span>LeWM</span><span>AnisoWM (Ours)</span><span>Goal</span></div>
+          <video src="static/videos/pusht_case2.mp4" poster="static/videos/pusht_case2.jpg" autoplay muted loop playsinline preload="auto"></video>
+        </div>
+        <div class="rollout">
+          <p class="case-label">Case 3</p>
+          <div class="rollout-labels"><span>LeWM</span><span>AnisoWM (Ours)</span><span>Goal</span></div>
+          <video src="static/videos/pusht_case3.mp4" poster="static/videos/pusht_case3.jpg" autoplay muted loop playsinline preload="auto"></video>
+        </div>
+      </div>
+      <div class="rollout-pane" data-env="cube" hidden>
+        <div class="rollout">
+          <p class="case-label">Case 1</p>
+          <div class="rollout-labels"><span>LeWM</span><span>AnisoWM (Ours)</span><span>Goal</span></div>
+          <video src="static/videos/cube_case1.mp4" poster="static/videos/cube_case1.jpg" autoplay muted loop playsinline preload="auto"></video>
+        </div>
+        <div class="rollout">
+          <p class="case-label">Case 2</p>
+          <div class="rollout-labels"><span>LeWM</span><span>AnisoWM (Ours)</span><span>Goal</span></div>
+          <video src="static/videos/cube_case2.mp4" poster="static/videos/cube_case2.jpg" autoplay muted loop playsinline preload="auto"></video>
+        </div>
+        <div class="rollout">
+          <p class="case-label">Case 3</p>
+          <div class="rollout-labels"><span>LeWM</span><span>AnisoWM (Ours)</span><span>Goal</span></div>
+          <video src="static/videos/cube_case3.mp4" poster="static/videos/cube_case3.jpg" autoplay muted loop playsinline preload="auto"></video>
+        </div>
+      </div>
+      <div class="rollout-pane" data-env="reacher" hidden>
+        <div class="rollout">
+          <p class="case-label">Case 1</p>
+          <div class="rollout-labels"><span>LeWM</span><span>AnisoWM (Ours)</span><span>Goal</span></div>
+          <video src="static/videos/reacher_case1.mp4" poster="static/videos/reacher_case1.jpg" autoplay muted loop playsinline preload="auto"></video>
+        </div>
+        <div class="rollout">
+          <p class="case-label">Case 2</p>
+          <div class="rollout-labels"><span>LeWM</span><span>AnisoWM (Ours)</span><span>Goal</span></div>
+          <video src="static/videos/reacher_case2.mp4" poster="static/videos/reacher_case2.jpg" autoplay muted loop playsinline preload="auto"></video>
+        </div>
+        <div class="rollout">
+          <p class="case-label">Case 3</p>
+          <div class="rollout-labels"><span>LeWM</span><span>AnisoWM (Ours)</span><span>Goal</span></div>
+          <video src="static/videos/reacher_case3.mp4" poster="static/videos/reacher_case3.jpg" autoplay muted loop playsinline preload="auto"></video>
+        </div>
+      </div>
+      <div class="rollout-pane" data-env="tworoom" hidden>
+        <div class="rollout">
+          <p class="case-label">Case 1</p>
+          <div class="rollout-labels"><span>LeWM</span><span>AnisoWM (Ours)</span><span>Goal</span></div>
+          <video src="static/videos/tworoom_case1.mp4" poster="static/videos/tworoom_case1.jpg" autoplay muted loop playsinline preload="auto"></video>
+        </div>
+        <div class="rollout">
+          <p class="case-label">Case 2</p>
+          <div class="rollout-labels"><span>LeWM</span><span>AnisoWM (Ours)</span><span>Goal</span></div>
+          <video src="static/videos/tworoom_case2.mp4" poster="static/videos/tworoom_case2.jpg" autoplay muted loop playsinline preload="auto"></video>
+        </div>
+        <div class="rollout">
+          <p class="case-label">Case 3</p>
+          <div class="rollout-labels"><span>LeWM</span><span>AnisoWM (Ours)</span><span>Goal</span></div>
+          <video src="static/videos/tworoom_case3.mp4" poster="static/videos/tworoom_case3.jpg" autoplay muted loop playsinline preload="auto"></video>
+        </div>
+      </div>
+      <!-- ROLLOUTS:END -->
+    </div>
+  </section>
+
+
+  <script>
+    var tabs = document.querySelectorAll('#env-tabs li');
+    var panes = document.querySelectorAll('.rollout-pane');
+    function show(env) {
+      tabs.forEach(function (t) { t.classList.toggle('is-active', t.dataset.env === env); });
+      panes.forEach(function (p) {
+        var on = p.dataset.env === env;
+        p.hidden = !on;
+        p.querySelectorAll('video').forEach(function (v) {
+          if (on) { v.currentTime = 0; var r = v.play(); if (r && r.catch) r.catch(function () {}); } else { v.pause(); }
+        });
+      });
+    }
+    tabs.forEach(function (t) { t.addEventListener('click', function () { show(t.dataset.env); }); });
+    document.querySelectorAll('.rollout video').forEach(function (v) {
+      v.addEventListener('click', function () { v.paused ? v.play() : v.pause(); });
+    });
+    show('pusht');
+  </script>
+</body>
+</html>
