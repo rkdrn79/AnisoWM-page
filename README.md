@@ -9,6 +9,7 @@
 
 <a href="https://rkdrn79.github.io/AnisoWM-page/"><img src="https://img.shields.io/badge/🌐_Project-Page-2f6fde?style=for-the-badge" alt="Project Page"></a>
 <a href="https://arxiv.org/abs/2609.37441"><img src="https://img.shields.io/badge/arXiv-2609.37441-b31b1b?style=for-the-badge&logo=arxiv&logoColor=white" alt="arXiv"></a>
+<a href="https://arxiv.org/pdf/2609.37441"><img src="https://img.shields.io/badge/📄_Paper-PDF-555555?style=for-the-badge" alt="Paper PDF"></a>
 
 <br>
 
