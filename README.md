@@ -2,13 +2,13 @@
 
 # Anisotropic Representations Improve Planning<br>in JEPA World Models
 
-**[Mingu Kang](https://rkdrn79.github.io/)**<sup>1</sup> &nbsp;·&nbsp; **Yoori Oh**<sup>1†</sup> &nbsp;·&nbsp; **Sookyung Kim**<sup>2†</sup> &nbsp;·&nbsp; **Joonseok Lee**<sup>1†</sup>
+**[Mingu Kang](https://rkdrn79.github.io/)**<sup>1</sup> &nbsp;·&nbsp; **[Yoori Oh](https://yoori000.github.io/)**<sup>1†</sup> &nbsp;·&nbsp; **[Sookyung Kim](https://agi.ewha.ac.kr/home)**<sup>2†</sup> &nbsp;·&nbsp; **[Joonseok Lee](http://www.joonseok.net/home.html)**<sup>1†</sup>
 
 <sup>1</sup>Seoul National University &nbsp;&nbsp; <sup>2</sup>Ewha Womans University
 <br><sup>†</sup>Corresponding authors
 
 <a href="https://rkdrn79.github.io/AnisoWM-page/"><img src="https://img.shields.io/badge/🌐_Project-Page-2f6fde?style=for-the-badge" alt="Project Page"></a>
-<a href="https://rkdrn79.github.io/AnisoWM-page/static/AnisoWM_preprint.pdf"><img src="https://img.shields.io/badge/📄_Paper-PDF-b31b1b?style=for-the-badge" alt="Paper"></a>
+<a href="https://arxiv.org/abs/2609.37441"><img src="https://img.shields.io/badge/arXiv-2609.37441-b31b1b?style=for-the-badge&logo=arxiv&logoColor=white" alt="arXiv"></a>
 
 <br>
 
@@ -117,11 +117,11 @@ We use the datasets, architecture and visual goal-planning protocol of LeWM.
 ## 📝 Citation
 
 ```bibtex
-@misc{kang2026anisowm,
-  title  = {Anisotropic Representations Improve Planning in JEPA World Models},
-  author = {Kang, Mingu and Oh, Yoori and Kim, Sookyung and Lee, Joonseok},
-  year   = {2026},
-  note   = {Preprint}
+@article{kang2026anisowm,
+  title   = {Anisotropic Representations Improve Planning in JEPA World Models},
+  author  = {Kang, Mingu and Oh, Yoori and Kim, Sookyung and Lee, Joonseok},
+  journal = {arXiv preprint arXiv:2609.37441},
+  year    = {2026}
 }
 ```
 
